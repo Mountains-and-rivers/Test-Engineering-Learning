@@ -1,0 +1,23 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="pytest" />
+          <option value="pytest-html" />
+          <option value="allure-pytest" />
+          <option value="setuptools" />
+          <option value="wheel" />
+          <option value="pytest-playwright" />
+          <option value="black" />
+          <option value="flake8" />
+          <option value="isort" />
+          <option value="playwright" />
+          <option value="PyYAML" />
+          <option value="loguru" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
