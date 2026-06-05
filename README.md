@@ -1,4 +1,8 @@
 # Test-Engineering-Learning 测试学习总结
+
+## 目录结构说明
+
+```
 Test-Engineering-Learning/
 ├── 00_README_测试方法核心知识库（黑盒/白盒/灰盒全集）/
 │   ├── 01_黑盒测试设计方法全集/
@@ -257,3 +261,4 @@ Test-Engineering-Learning/
     │   └── README_管理岗能力要求.md
     └── 05_简历优化&项目包装&职场晋升指南/
         └── README_简历与求职优化手册.md
+        ```
