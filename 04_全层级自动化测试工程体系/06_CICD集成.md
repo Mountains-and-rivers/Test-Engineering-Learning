@@ -680,14 +680,13 @@ RUN apt-get update && apt-get install -y \
     firefox-esr \
     && rm -rf /var/lib/apt/lists/*
 
-# 安装ChromeDriver
+# 安装Chrome for Testing (CfT) 驱动
 RUN CHROME_VERSION=$(google-chrome --version | cut -d' ' -f3 | cut -d'.' -f1) && \
-    wget -q "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION}" \
-    && CHROMEDRIVER_VERSION=$(cat LATEST_RELEASE_${CHROME_VERSION}) \
-    && wget -q "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip" \
-    && unzip chromedriver_linux64.zip -d /usr/local/bin/ \
+    wget -q "https://storage.googleapis.com/chrome-for-testing-public/${CHROME_VERSION}/linux64/chromedriver-linux64.zip" \
+    && unzip chromedriver-linux64.zip -d /tmp/ \
+    && mv /tmp/chromedriver-linux64/chromedriver /usr/local/bin/ \
     && chmod +x /usr/local/bin/chromedriver \
-    && rm chromedriver_linux64.zip
+    && rm -rf chromedriver-linux64.zip /tmp/chromedriver-linux64
 
 WORKDIR /app
 
@@ -731,16 +730,16 @@ services:
     networks:
       - test-network
 
-  # Selenium Grid
+  # Selenium Grid 4
   selenium-hub:
-    image: selenium/hub:latest
+    image: selenium/hub:4
     ports:
-      - "4444:4444"
+      - "4442-4444:4442-4444"
     networks:
       - test-network
 
   chrome-node:
-    image: selenium/node-chrome:latest
+    image: selenium/node-chrome:4
     environment:
       - SE_EVENT_BUS_HOST=selenium-hub
       - SE_EVENT_BUS_PUBLISH_PORT=4442
@@ -752,7 +751,7 @@ services:
       - test-network
 
   firefox-node:
-    image: selenium/node-firefox:latest
+    image: selenium/node-firefox:4
     environment:
       - SE_EVENT_BUS_HOST=selenium-hub
       - SE_EVENT_BUS_PUBLISH_PORT=4442
@@ -872,7 +871,7 @@ public class GridDistributedTest {
             }
             
             driver = new RemoteWebDriver(
-                new URL("http://selenium-hub:4444/wd/hub"), caps);
+                new URL("http://selenium-hub:4444/"), caps);
             
             // 执行测试
             driver.get("https://www.example.com");

@@ -37,15 +37,15 @@
 ### 测试在CI/CD流水线中的位置
 
 ```yaml
-# 标准CI/CD流水线中的测试阶段
+# 标准CI/CD流水线中的测试阶段 (安全扫描左移)
 pipeline:
   stages:
     - compile          # 编译
+    - code-analysis    # 静态代码分析 (安全左移: 编码后立即检查)
     - unit-test        # 单元测试 (快, <5分钟)
-    - code-analysis    # 静态代码分析
+    - security-scan    # 安全扫描 (安全左移: 在集成测试前发现漏洞)
     - build            # 构建镜像
     - integration-test # 集成/API测试 (<15分钟)
-    - security-scan    # 安全扫描
     - ui-test          # UI自动化测试
     - performance-test # 性能测试 (可选, 夜间执行)
     - deploy-staging   # 部署到预发布环境
@@ -437,10 +437,11 @@ api-test:
     name: postman/newman:latest
     entrypoint: [""]
   script:
-    - newman run collections/api_tests.json
-      -e environments/testing.json
-      --reporters cli,junit
-      --reporter-junit-export report.xml
+    - |
+      newman run collections/api_tests.json \
+        -e environments/testing.json \
+        --reporters cli,junit \
+        --reporter-junit-export report.xml
   artifacts:
     reports:
       junit: report.xml
@@ -470,19 +471,21 @@ sast:
   stage: security
   image: sonarsource/sonar-scanner-cli:latest
   script:
-    - sonar-scanner
-      -Dsonar.host.url=$SONAR_HOST_URL
-      -Dsonar.login=$SONAR_TOKEN
-      -Dsonar.qualitygate.wait=true
+    - |
+      sonar-scanner \
+        -Dsonar.host.url=$SONAR_HOST_URL \
+        -Dsonar.login=$SONAR_TOKEN \
+        -Dsonar.qualitygate.wait=true
 
 dependency-scan:
   stage: security
   image: owasp/dependency-check:latest
   script:
-    - /usr/share/dependency-check/bin/dependency-check.sh
-      --scan .
-      --format HTML
-      --out report.html
+    - |
+      /usr/share/dependency-check/bin/dependency-check.sh \
+        --scan . \
+        --format HTML \
+        --out report.html
   artifacts:
     paths:
       - report.html
@@ -491,17 +494,19 @@ container-scan:
   stage: security
   image: aquasec/trivy:latest
   script:
-    - trivy image --severity HIGH,CRITICAL
-      $DOCKER_REGISTRY/$APP_NAME:$CI_COMMIT_SHORT_SHA
+    - |
+      trivy image --severity HIGH,CRITICAL \
+        $DOCKER_REGISTRY/$APP_NAME:$CI_COMMIT_SHORT_SHA
 
 # ==================== 部署阶段 ====================
 deploy-staging:
   stage: deploy-staging
   image: bitnami/kubectl:latest
   script:
-    - kubectl set image deployment/$APP_NAME
-      $APP_NAME=$DOCKER_REGISTRY/$APP_NAME:$CI_COMMIT_SHORT_SHA
-      -n staging
+    - |
+      kubectl set image deployment/$APP_NAME \
+        $APP_NAME=$DOCKER_REGISTRY/$APP_NAME:$CI_COMMIT_SHORT_SHA \
+        -n staging
   environment:
     name: staging
     url: https://staging.example.com
@@ -525,9 +530,10 @@ deploy-prod:
   stage: deploy-prod
   image: bitnami/kubectl:latest
   script:
-    - kubectl set image deployment/$APP_NAME
-      $APP_NAME=$DOCKER_REGISTRY/$APP_NAME:$CI_COMMIT_SHORT_SHA
-      -n production
+    - |
+      kubectl set image deployment/$APP_NAME \
+        $APP_NAME=$DOCKER_REGISTRY/$APP_NAME:$CI_COMMIT_SHORT_SHA \
+        -n production
   environment:
     name: production
     url: https://example.com
@@ -1152,7 +1158,7 @@ resource "aws_vpc" "test" {
 
 # 创建测试EC2实例
 resource "aws_instance" "test_runner" {
-  ami           = "ami-0c55b159cbfafe1f0"  # Ubuntu 22.04
+  ami           = "ami-0c55b159cbfafe1f0"  # Amazon Linux 2
   instance_type = "t3.medium"
 
   vpc_security_group_ids = [aws_security_group.test_sg.id]
