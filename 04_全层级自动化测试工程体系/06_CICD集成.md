@@ -707,8 +707,6 @@ CMD ["mvn", "test", "-Dtest.env=${TEST_ENV}", "-Dgroups=${TEST_GROUPS}"]
 
 ```yaml
 # docker-compose.yml
-version: '3.8'
-
 services:
   # 测试执行器
   test-runner:

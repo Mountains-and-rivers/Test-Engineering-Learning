@@ -1,4 +1,4 @@
-# 06 DevOps工具
+# DevOps工具
 
 ## 目录
 
@@ -786,7 +786,6 @@ CMD ["mvn", "test"]
 
 ```yaml
 # docker-compose.test.yml
-version: '3.8'
 
 services:
   # 被测应用
