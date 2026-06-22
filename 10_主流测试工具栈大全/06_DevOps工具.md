@@ -21,16 +21,16 @@
 ┌──────────────────────────────────────────────────────────┐
 │                       DevOps 循环                        │
 │                                                          │
-                                                          │    Plan → Code → Build → Test → Release → Deploy → Operate → Monitor → ...
+│    Plan → Code → Build → Test → Release → Deploy → Operate → Monitor → ...
 │                                                          │
-│    测试介入的每个阶段:                                  │
-│    Plan:  测试策略、测试计划                            │
-│    Code:  单元测试、代码审查、SAST                      │
-│    Build: 编译检查、单元测试、依赖扫描                  │
-│    Test:  集成测试、API测试、UI测试、性能测试、安全测试 │
+│    测试介入的每个阶段:                                     │
+│    Plan:  测试策略、测试计划                               │
+│    Code:  单元测试、代码审查、SAST                        │
+│    Build: 编译检查、单元测试、依赖扫描                     │
+│    Test:  集成测试、API测试、UI测试、性能测试、安全测试    │
 │    Release: 冒烟测试、UAT验收                            │
-│    Deploy: 金丝雀发布验证、蓝绿部署验证                 │
-│    Operate/Monitor: 线上监控、告警、混沌工程            │
+│    Deploy: 金丝雀发布验证、蓝绿部署验证                    │
+│    Operate/Monitor: 线上监控、告警、混沌工程              │
 └──────────────────────────────────────────────────────────┘
 ```
 
